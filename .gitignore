@@ -1,0 +1,16 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+main
+*.test
+
+out
+.idea/
+*.iml
+*.DS_Store
+vendor/
+*.out
+
+application.yaml
