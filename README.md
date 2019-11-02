@@ -13,6 +13,12 @@ cd ${todolist}
 make setup
 ```
 
+## Application
+
+```
+$ make serve
+```
+
 ## DB Migration
 
 ```
