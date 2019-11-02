@@ -26,3 +26,9 @@ $ make migrate
 ```
 $ make rollback
 ```
+
+## Disclaimer
+- Helm chart is still in development.
+- App will crash when started using docker due to failing connectivity to postgres.
+- The `constant` and `apperror` package needs cleanup.
+- The config command only outputs the address the app will run on.
