@@ -1,5 +1,7 @@
-test: copy-config build migrate
+test: build
 	go test ./...
+
+setup: deps copy-config migrate build test
 
 copy-config:
 	cp application.yaml.sample application.yaml
