@@ -1,4 +1,4 @@
-APP_HOST: localhost
+APP_HOST: 127.0.0.1
 APP_PORT: 8080
 
 LOG_LEVEL: "info"
@@ -10,3 +10,4 @@ DB_PORT: "5432"
 DB_USER: "postgres"
 DB_PASSWORD: ""
 DB_MAXPOOLSIZE: "5"
+DB_RETRY_COUNT: "10"

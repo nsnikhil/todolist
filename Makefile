@@ -33,6 +33,9 @@ vet:
 serve: build
 	./out/main serve
 
+docker-serve:
+	docker-compose -f deployment/docker-compose.yaml up
+
 migrate:
 	./out/main migrate
 

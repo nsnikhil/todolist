@@ -19,6 +19,12 @@ make setup
 $ make serve
 ```
 
+## Docker Start
+#### Starts the application and postgres in a container and also runs the migrations
+```
+$ make docker-serve
+```
+
 ## DB Migration
 
 ```

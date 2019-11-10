@@ -1,4 +1,6 @@
-FROM golang:latest
+FROM golang:alpine
+
+RUN apk add make
 
 WORKDIR /todolist
 

@@ -15,5 +15,5 @@ func newSeverConfig() ServerConfig {
 }
 
 func (sc ServerConfig) Address() string {
-	return fmt.Sprintf("%s:%d", sc.host, sc.port)
+	return fmt.Sprintf(":%d", sc.port)
 }

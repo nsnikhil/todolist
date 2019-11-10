@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"time"
 	"todolist/applogger"
 	"todolist/config"
 	"todolist/constants"
@@ -19,9 +20,11 @@ func SetUpDependencies() Dependencies {
 
 func setupDBConnection() *sqlx.DB {
 
-	dbHandler := store.NewDBHandle(config.GetDatabaseConfig())
+	dbConfig := config.GetDatabaseConfig()
 
-	db, err := dbHandler.GetDB()
+	dbHandler := store.NewDBHandle(dbConfig)
+
+	db, err := getDBWithRetry(dbHandler, dbConfig.GetRetryCount())
 
 	if err != nil {
 		applogger.Errorf(constants.ErrorDatabaseFailedToLoad, fmt.Sprint("[setupDBConnection] [GetDB]"), config.GetDatabaseConfig().String(), err)
@@ -31,6 +34,18 @@ func setupDBConnection() *sqlx.DB {
 	applogger.Infof(constants.SetupDB, "[setupDBConnection]", db)
 
 	return db
+}
+
+func getDBWithRetry(dbHandler store.DBHandleInterface, retryCount int) (*sqlx.DB, error) {
+	applogger.Infof(constants.GetDBWithRetry, "[getDBWithRetry]", retryCount)
+	for i := retryCount; i > 0; i-- {
+		db, err := dbHandler.GetDB()
+		if err == nil {
+			return db, nil
+		}
+		time.Sleep(time.Second)
+	}
+	return dbHandler.GetDB()
 }
 
 func setupStore() store.Store {

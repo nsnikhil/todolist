@@ -11,6 +11,8 @@ const (
 
 	SetupDB = "%s : successful : %v"
 
+	GetDBWithRetry = "%s : with %d retries"
+
 	ServerShuttingDown = "server shutting down (signal: %s)"
 
 	ServerShutDownComplete = "server shutdown complete"

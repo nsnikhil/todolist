@@ -1,0 +1,32 @@
+version: '3.7'
+
+volumes:
+  database_data:
+    driver: local
+
+services:
+
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 8081:5432
+    volumes:
+      - ../store/migrations/:/docker-entrypoint-initdb.d/
+      - database_data:/var/lib/postgresql/data
+
+  api:
+    image: nsnikhil/todolist:v0.1
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_PASSWORD: password
+    depends_on:
+      - db
