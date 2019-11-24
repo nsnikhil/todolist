@@ -23,9 +23,19 @@ jobs:
     - name: Get dependencies
       run: make deps
 
+    - name: Migrations
+      run: |
+        sudo apt-get install -y wget ca-certificates
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+        sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+        sudo apt-get update
+        sudo apt-get install -y postgresql postgresql-contrib
+        make copy-config
+        make build
+        make migrate
+
     - name: Test
       run: |
-        make copy-config
         make test
 
   build:
