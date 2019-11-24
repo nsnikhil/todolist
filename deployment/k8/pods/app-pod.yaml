@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: todolist-app-pod
+  labels:
+    app: todolist-app
+    role: backend
+spec:
+  containers:
+    - name: todolist-app-container
+      image: nsnikhil/todolist:v0.1
+      livenessProbe:
+        httpGet:
+          path: /ping
+          port: 8080
+        initialDelaySeconds: 3
+        periodSeconds: 3
+      readinessProbe:
+        httpGet:
+          path: /ping
+          port: 8080
+        initialDelaySeconds: 3
+        periodSeconds: 3
+      startupProbe:
+        httpGet:
+          path: /healthz
+          port: liveness-port
+        failureThreshold: 30
+        periodSeconds: 10

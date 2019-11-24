@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: "0.1.0"
+description: A Helm chart for Kubernetes
+name: todolist
+version: 0.1.0
+sources:
+  - https://github.com/nsnikhil/todolist
+maintainers:
+  - name: Nikhil Soni
+    email: n.nikhil.ns65@gmail.com
+type: application

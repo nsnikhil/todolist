@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: todolist-db-pod
+  labels:
+    app: todolist-db
+    role: database
+spec:
+  containers:
+    - name: todolist-db-container
+      image: postgres:alpine
+

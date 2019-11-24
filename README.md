@@ -20,9 +20,15 @@ $ make serve
 ```
 
 ## Docker Start
-#### Starts the application and postgres in a container and also runs the migrations
+#### Starts the application and postgres in a container
 ```
 $ make docker-serve
+```
+
+## Kubernetes 
+#### Starts the application and postgres in a minikube
+```
+$ make k8-serve
 ```
 
 ## DB Migration
@@ -39,6 +45,5 @@ $ make rollback
 
 ## Disclaimer
 - Helm chart is still in development.
-- App will crash when started using docker due to failing connectivity to postgres.
 - The `constant` and `apperror` package needs cleanup.
 - The config command only outputs the address the app will run on.

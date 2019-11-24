@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "todolist-chart.name" -}}
+{{- define "todolist.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "todolist-chart.fullname" -}}
+{{- define "todolist.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "todolist-chart.chart" -}}
+{{- define "todolist.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "todolist-chart.labels" -}}
-app.kubernetes.io/name: {{ include "todolist-chart.name" . }}
-helm.sh/chart: {{ include "todolist-chart.chart" . }}
+{{- define "todolist.labels" -}}
+app.kubernetes.io/name: {{ include "todolist.name" . }}
+helm.sh/chart: {{ include "todolist.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -47,9 +47,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "todolist-chart.serviceAccountName" -}}
+{{- define "todolist.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "todolist-chart.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "todolist.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "todolist.fullname" . }}-{{ .Values.databaseInitVolume.name }}
+  labels:
+    type: {{ .Values.databaseInitVolume.labels.type }}
+spec:
+  storageClassName: {{ .Values.databaseInitVolume.storageClassName }}
+  capacity:
+    storage: {{ .Values.databaseInitVolume.storage }}
+  accessModes:
+    {{ .Values.databaseInitVolume.accessModes }}
+  hostPath:
+    path: {{ .Values.databaseInitVolume.hostPath }}

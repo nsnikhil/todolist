@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todolist-db-deploy
+  labels:
+    app: todolist-db-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: todolist-db
+  template:
+    metadata:
+      labels:
+        app: todolist-db
+        role: database
+    spec:
+      containers:
+        - name: todolist-db-container
+          image: postgres:alpine

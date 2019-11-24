@@ -1,0 +1,27 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: todolist-db-preset
+spec:
+  selector:
+    matchLabels:
+      app: todolist-db
+  env:
+    - name: POSTGRES_DB
+      value: "postgres"
+    - name: POSTGRES_USER
+      value: "postgres"
+    - name: POSTGRES_PASSWORD
+      value: "password"
+  volumeMounts:
+    - mountPath: /var/lib/postgresql/data
+      name: todolist-db-pvc
+    - mountPath: /docker-entrypoint-initdb.d/
+      name: todolist-db-init-pvc
+  volumes:
+    - name: todolist-db-pvc
+      persistentVolumeClaim:
+        claimName: todolist-db-pvc
+    - name: todolist-db-init-pvc
+      persistentVolumeClaim:
+        claimName: todolist-db-init-pvc

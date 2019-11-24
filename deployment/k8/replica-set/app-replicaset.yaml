@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: todolist-app-rs
+  labels:
+    app: todolist-app-replica
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: todolist-app
+  template:
+    metadata:
+      labels:
+        app: todolist-app
+        role: backend
+    spec:
+      containers:
+        - name: todolist-app-container
+          image: nsnikhil/todolist:v0.1
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: liveness-port
+            failureThreshold: 30
+            periodSeconds: 10

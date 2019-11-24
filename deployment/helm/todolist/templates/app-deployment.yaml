@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.name }}
+  labels:
+    app: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.labels.app }}
+spec:
+  replicas: {{ .Values.app.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.template.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.template.labels.app }}
+        role: {{ .Values.app.deployment.template.labels.role }}
+    spec:
+      containers:
+        - name: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.template.containers.name }}
+          image: {{ .Values.app.deployment.template.containers.image }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.app.deployment.template.containers.livenessProbe.path }}
+              port: {{ .Values.app.deployment.template.containers.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.app.deployment.template.containers.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.deployment.template.containers.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.app.deployment.template.containers.readinessProbe.path }}
+              port: {{ .Values.app.deployment.template.containers.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.app.deployment.template.containers.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.deployment.template.containers.readinessProbe.periodSeconds }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.app.deployment.template.containers.startupProbe.path }}
+              port: {{ .Values.app.deployment.template.containers.startupProbe.port }}
+            failureThreshold: {{ .Values.app.deployment.template.containers.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.app.deployment.template.containers.startupProbe.periodSeconds }}

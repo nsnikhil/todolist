@@ -1,0 +1,27 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: {{ include "todolist.fullname" . }}-{{ .Values.db.podPreset.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.labels.app }}
+  env:
+    - name: POSTGRES_DB
+      value: "postgres"
+    - name: POSTGRES_USER
+      value: "postgres"
+    - name: POSTGRES_PASSWORD
+      value: "password"
+  volumeMounts:
+    - mountPath: /var/lib/postgresql/data
+      name: {{ include "todolist.fullname" . }}-{{ .Values.databaseVolumeClaim.name }}
+    - mountPath: /docker-entrypoint-initdb.d/
+      name: {{ include "todolist.fullname" . }}-{{ .Values.databaseInitVolume.claimName }}
+  volumes:
+    - name: {{ include "todolist.fullname" . }}-{{ .Values.databaseVolumeClaim.name }}
+      persistentVolumeClaim:
+        claimName: {{ include "todolist.fullname" . }}-{{ .Values.databaseVolumeClaim.name }}
+    - name: {{ include "todolist.fullname" . }}-{{ .Values.databaseInitVolume.claimName }}
+      persistentVolumeClaim:
+        claimName: {{ include "todolist.fullname" . }}-{{ .Values.databaseInitVolume.claimName }}

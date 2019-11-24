@@ -1,0 +1,15 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: todolist-app-preset
+spec:
+  selector:
+    matchLabels:
+      app: todolist-app
+  env:
+    - name: DB_HOST
+      value: todolist-db-svc
+    - name: DB_PORT
+      value: "5432"
+    - name: DB_PASSWORD
+      value: "password"

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.name }}
+  labels:
+    app: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.labels.app }}
+spec:
+  replicas: {{ .Values.db.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.labels.app }}
+        role: database
+    spec:
+      containers:
+        - name: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.containers.name }}
+          image: {{ .Values.db.deployment.template.containers.image }}

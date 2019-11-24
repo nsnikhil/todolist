@@ -34,7 +34,15 @@ serve: build
 	./out/main serve
 
 docker-serve:
-	docker-compose -f deployment/docker-compose.yaml up
+	docker-compose -f deployment/docker/docker-compose.yaml up
+
+k8-serve:
+	chmod +x deployment/k8/start.sh
+	./deployment/k8/start.sh
+
+k8-stop:
+	chmod +x deployment/k8/stop.sh
+	./deployment/k8/stop.sh
 
 migrate:
 	./out/main migrate
