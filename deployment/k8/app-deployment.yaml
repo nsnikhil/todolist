@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: todolist-app-container
-          image: nsnikhil/todolist:v0.1
+          image: nsnikhil10/todolist:v0.1
           livenessProbe:
             httpGet:
               path: /ping

@@ -20,7 +20,7 @@ services:
       - database_data:/var/lib/postgresql/data
 
   api:
-    image: nsnikhil/todolist:v0.1
+    image: nsnikhil10/todolist:v0.1
     restart: always
     ports:
       - 8080:8080
