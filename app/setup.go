@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"time"
 	"todolist/config"
+	"todolist/domain"
 	"todolist/service"
 	"todolist/store"
 	"todolist/util"
@@ -12,9 +13,13 @@ import (
 func SetUpDependencies() Dependencies {
 	util.DebugLog("[SetUpDependencies]")
 	return Dependencies{
-		TaskFactory: nil,
+		TaskFactory: setUpFactory(),
 		Service:     setupService(),
 	}
+}
+
+func setUpFactory() domain.TaskFactory {
+	return domain.NewTaskFactory()
 }
 
 func setupDBConnection() *sqlx.DB {
