@@ -1,24 +1,22 @@
 package store
 
 import (
-	"fmt"
 	"github.com/jmoiron/sqlx"
-	"todolist/applogger"
-	"todolist/constants"
+	"todolist/util"
 )
 
 type Store struct {
-	todoListStore TodoListStoreInterface
+	TaskStore
 }
 
 func NewStore(db *sqlx.DB) Store {
-	applogger.Infof(constants.StoreNewStore, fmt.Sprint("[Store] [NewStore]"))
+	util.DebugLog("[Store] [NewStore]", db)
 	return Store{
-		todoListStore: NewTodoListStore(db),
+		TaskStore: NewTaskStore(db),
 	}
 }
 
-func (s Store) GetTodoListStore() TodoListStoreInterface {
-	applogger.Infof(constants.StoreGetTodoListStore, fmt.Sprint("[Store] [GetTodoListStore]"), s.todoListStore)
-	return s.todoListStore
+func (s Store) GetTodoListStore() TaskStore {
+	util.DebugLog("[Store] [GetTodoListStore]")
+	return s.TaskStore
 }

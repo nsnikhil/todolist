@@ -3,20 +3,20 @@ package cmd
 import (
 	"encoding/json"
 	"os"
-	"todolist/applogger"
 	"todolist/config"
-	"todolist/constants"
+	"todolist/util"
 )
 
-var configCmd = newCommand(constants.ConfigCommandName, constants.ConfigCommandDescription, printConfigurations)
+var configCmd = newCommand(configCommandName, configCommandDescription, printConfigurations)
 
 //TODO FIND A WAY TO GET ALL CONFIGS AND PRINT
 func printConfigurations() {
 	if err := config.Load(); err != nil {
-		applogger.Errorf(constants.ErrorFailedToLoadConfig, "[setupDBConnection] [Load]", err)
+		util.LogError("[printConfigurations] [config.Load]", err)
 	}
+
 	if err := json.NewEncoder(os.Stdout).Encode(config.GetServerConfig().Address()); err != nil {
-		applogger.Errorf(constants.ErrorFailedToDisplayConfig, "[printConfigurations]")
+		util.LogError("[printConfigurations] [json.NewEncoder]", err)
 	}
 }
 

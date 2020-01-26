@@ -2,23 +2,22 @@ package cmd
 
 import (
 	"github.com/golang-migrate/migrate/v4"
-	"todolist/applogger"
-	"todolist/constants"
 	"todolist/store"
+	"todolist/util"
 )
 
-var migrateCmd = newCommand(constants.MigrateCommandName, constants.MigrateCommandDescription, runMigrations)
+var migrateCmd = newCommand(migrateCommandName, migrateCommandDescription, runMigrations)
 
 func runMigrations() {
 	if err := store.Migrate(); err != nil {
 		if err == migrate.ErrNoChange {
-			applogger.Infof(constants.SchemaUpToDate, "[runMigrations] [Migrate]")
+			util.DebugLog("[runMigrations] [ErrNoChange]")
 			return
 		}
-		applogger.Errorf(constants.ErrorMigrationFailed, "[runMigrations] [Migrate]", err)
+		util.LogError("[runMigrations] [Migrate]", err)
 		return
 	}
-	applogger.Infof(constants.SuccessfulMigrations, "[runMigrations] [Migrate]")
+	util.DebugLog("[runMigrations] [Migrate] [Success]")
 }
 
 func init() {

@@ -8,16 +8,21 @@ import (
 	_ "github.com/lib/pq"
 	"path/filepath"
 	"strings"
-	"todolist/applogger"
 	"todolist/config"
 	"todolist/constants"
+	"todolist/util"
+)
+
+const (
+	migrationPath   = "./store/migrations"
+	rollBackStep = -1
+	cutSet = "file://"
 )
 
 func Migrate() error {
 	newMigrate, err := newMigrate()
 	if err != nil {
-		applogger.Errorf(constants.ErrorFailedToGetMigrate, "[Migrate] [newMigrate]", err)
-		return err
+		return util.LogAndGetError("[Migrate] [newMigrate]", err)
 	}
 	return newMigrate.Up()
 }
@@ -25,47 +30,43 @@ func Migrate() error {
 func Rollback() error {
 	newMigrate, err := newMigrate()
 	if err != nil {
-		applogger.Errorf(constants.ErrorFailedToGetMigrate, "[Migrate] [newMigrate]", err)
-		return err
+		return util.LogAndGetError("[Migrate] [newMigrate]", err)
 	}
-	return newMigrate.Steps(constants.RollBackStep)
+	return newMigrate.Steps(rollBackStep)
 }
 
 func newMigrate() (*migrate.Migrate, error) {
 	if err := config.Load(); err != nil {
-		applogger.Errorf(constants.ErrorFailedToLoadConfig, "[runMigrations] [Load]", err)
-		return nil, err
+		return nil, util.LogAndGetError("[newMigrate] [config.Load]", err)
 	}
 
-	dbHandler := NewDBHandle(config.GetDatabaseConfig())
+	dbHandler := NewDBHandler(config.GetDatabaseConfig())
 
 	db, err := dbHandler.GetDB()
 
 	if err != nil {
-		applogger.Errorf(constants.ErrorDatabaseFailedToLoad, fmt.Sprint("[runMigrations] [GetDB]"), config.GetDatabaseConfig().String(), err)
-		return nil, err
+		return nil, util.LogAndGetError("[newMigrate] [GetDB]", err)
 	}
 
 	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
 	if err != nil {
-		applogger.Errorf(constants.ErrorFailedToGetDatabaseDriver, "[runMigrations] [WithInstance]", err)
-		return nil, err
+		return nil, util.LogAndGetError("[newMigrate] [postgres.WithInstance]", err)
 	}
 
-	sourcePath, err := getSourcePath(constants.MigrationPath)
+	sourcePath, err := getSourcePath(migrationPath)
 	if err != nil {
-		return nil, err
+		return nil, util.LogAndGetError("[newMigrate] [getSourcePath]", err)
 	}
-	applogger.Infof(constants.SchemaPath, "[runMigrations] [getSourcePath]", sourcePath)
 
+	util.DebugLog("[newMigrate] [getSourcePath]", sourcePath)
 	return migrate.NewWithDatabaseInstance(sourcePath, "postgres", driver)
 }
 
 func getSourcePath(directory string) (string, error) {
-	directory = strings.TrimLeft(directory, constants.CutSet)
+	directory = strings.TrimLeft(directory, cutSet)
 	absPath, err := filepath.Abs(directory)
 	if err != nil {
 		return constants.EmptyString, err
 	}
-	return fmt.Sprintf("%s%s", constants.CutSet, absPath), nil
+	return fmt.Sprintf("%s%s", cutSet, absPath), nil
 }

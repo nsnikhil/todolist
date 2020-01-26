@@ -1,43 +1,37 @@
 package app
 
 import (
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
-	"todolist/applogger"
 	"todolist/config"
-	"todolist/constants"
 	"todolist/service"
 	"todolist/store"
+	"todolist/util"
 )
 
 func SetUpDependencies() Dependencies {
-	applogger.Infof(constants.SetupDependencies, "[SetUpDependencies]")
+	util.DebugLog("[SetUpDependencies]")
 	return Dependencies{
-		Service: setupService(),
+		TaskFactory: nil,
+		Service:     setupService(),
 	}
 }
 
 func setupDBConnection() *sqlx.DB {
-
 	dbConfig := config.GetDatabaseConfig()
-
-	dbHandler := store.NewDBHandle(dbConfig)
+	dbHandler := store.NewDBHandler(dbConfig)
 
 	db, err := getDBWithRetry(dbHandler, dbConfig.GetRetryCount())
-
 	if err != nil {
-		applogger.Errorf(constants.ErrorDatabaseFailedToLoad, fmt.Sprint("[setupDBConnection] [GetDB]"), config.GetDatabaseConfig().String(), err)
-		panic(err)
+		panic(util.LogAndGetError("[setupDBConnection] [getDBWithRetry]", err))
 	}
 
-	applogger.Infof(constants.SetupDB, "[setupDBConnection]", db)
-
+	util.DebugLog("[setupDBConnection] [Success]")
 	return db
 }
 
-func getDBWithRetry(dbHandler store.DBHandleInterface, retryCount int) (*sqlx.DB, error) {
-	applogger.Infof(constants.GetDBWithRetry, "[getDBWithRetry]", retryCount)
+func getDBWithRetry(dbHandler store.DBHandler, retryCount int) (*sqlx.DB, error) {
+	util.DebugLog("[getDBWithRetry] : ", retryCount)
 	for i := retryCount; i > 0; i-- {
 		db, err := dbHandler.GetDB()
 		if err == nil {
@@ -49,12 +43,11 @@ func getDBWithRetry(dbHandler store.DBHandleInterface, retryCount int) (*sqlx.DB
 }
 
 func setupStore() store.Store {
-	applogger.Infof(constants.SetupStore, "[setupStore]")
+	util.DebugLog("[setupStore]")
 	return store.NewStore(setupDBConnection())
 }
 
 func setupService() service.Service {
-	todoListService := service.NewTodoListService(setupStore().GetTodoListStore())
-	applogger.Infof(constants.SetupService, "[setupService]")
-	return service.NewService(todoListService)
+	util.DebugLog("[setupService]")
+	return service.NewService(service.NewTaskService(setupStore().GetTodoListStore()))
 }

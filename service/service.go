@@ -1,22 +1,21 @@
 package service
 
 import (
-	"todolist/applogger"
-	"todolist/constants"
+	"todolist/util"
 )
 
 type Service struct {
-	todoListService TodoListServiceInterface
+	TaskService
 }
 
-func NewService(todoListService TodoListServiceInterface) Service {
-	applogger.Infof(constants.NewService, "[Service] [NewService]")
+func NewService(taskService TaskService) Service {
+	util.DebugLog("[Service] [NewService]")
 	return Service{
-		todoListService: todoListService,
+		TaskService: taskService,
 	}
 }
 
-func (s Service) GetTodoListService() TodoListServiceInterface {
-	applogger.Infof(constants.ServiceGetTodoListService, "[Service] [GetTodoListService]")
-	return s.todoListService
+func (s Service) GetTaskService() TaskService {
+	util.DebugLog("[Service] [GetTaskService]")
+	return s.TaskService
 }

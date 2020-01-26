@@ -13,8 +13,8 @@ func TestCreateNewService(t *testing.T) {
 	}{
 		{
 			name:            "test create new service",
-			actualService:   NewService(MockTodoListServiceInterface{}),
-			expectedService: Service{todoListService: MockTodoListServiceInterface{}},
+			actualService:   NewService(&MockTaskService{}),
+			expectedService: Service{TaskService: &MockTaskService{}},
 		},
 	}
 	for _, testCase := range testCases {

@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"todolist/constants"
 )
 
 var rootCmd = &cobra.Command{
-	Use:     constants.AppName,
-	Short:   constants.AppDescription,
-	Version: constants.AppVersion,
+	Use:     appName,
+	Short:   appDescription,
+	Version: appVersion,
 }
 
 func Execute() {

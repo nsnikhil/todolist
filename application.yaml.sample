@@ -1,5 +1,6 @@
 APP_HOST: 127.0.0.1
 APP_PORT: 8080
+APP_PROTOCOL: "tcp"
 
 LOG_LEVEL: "info"
 LOG_FORMAT: "text"

@@ -1,5 +1,7 @@
 CREATE TABLE todolist (
 id uuid PRIMARY KEY NOT NULL,
-description text NOT NULL,
-status boolean NOT NULL DEFAULT 't'
+title text NOT NULL,
+description text ,
+status boolean DEFAULT 'f',
+tags text[]
 );

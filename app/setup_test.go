@@ -23,7 +23,7 @@ func TestSetUpDependencies(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			assert.NotEqual(t, nil, testCase.actualDependency)
-			assert.NotEqual(t, nil, testCase.actualDependency.GetTodoListService())
+			assert.NotEqual(t, nil, testCase.actualDependency.GetTaskService())
 		})
 	}
 }

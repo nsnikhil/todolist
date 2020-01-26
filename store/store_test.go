@@ -17,7 +17,7 @@ func TestCreateNewStore(t *testing.T) {
 			actualStore: func() Store {
 				return NewStore(&sqlx.DB{})
 			},
-			expectedStore: Store{todoListStore: NewTodoListStore(&sqlx.DB{})},
+			expectedStore: Store{TaskStore: NewTaskStore(&sqlx.DB{})},
 		},
 	}
 	for _, testCase := range testCases {

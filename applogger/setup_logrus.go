@@ -4,7 +4,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"todolist/config"
-	"todolist/constants"
 )
 
 var appLogger *logrus.Logger
@@ -35,7 +34,7 @@ func init() {
 
 func loadConfig() {
 	if err := config.Load(); err != nil {
-		logrus.Errorf(constants.ErrorFailedToLoadConfig, "[setupDBConnection] [Load]", err)
+		logrus.Errorf("%s : %v", "[setupDBConnection] [Load]", err)
 		panic(err)
 	}
 }

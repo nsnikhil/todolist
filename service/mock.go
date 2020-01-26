@@ -5,31 +5,26 @@ import (
 	"todolist/domain"
 )
 
-type MockTodoListServiceInterface struct {
+type MockTaskService struct {
 	mock.Mock
 }
 
-func (mock MockTodoListServiceInterface) Add(task domain.TaskInterface) error {
+func (mock *MockTaskService) Add(task domain.Task) error {
 	args := mock.Called(task)
 	return args.Error(0)
 }
 
-func (mock MockTodoListServiceInterface) Remove(taskID string) error {
-	args := mock.Called(taskID)
+func (mock *MockTaskService) Remove(id string, ids ...string) error {
+	args := mock.Called(id, ids)
 	return args.Error(0)
 }
 
-func (mock MockTodoListServiceInterface) Update(task domain.TaskInterface) error {
+func (mock *MockTaskService) Update(task domain.Task) error {
 	args := mock.Called(task)
 	return args.Error(0)
 }
 
-func (mock MockTodoListServiceInterface) GetTodoList() (domain.TodoListInterface, error) {
-	args := mock.Called()
-	return args.Get(0).(domain.TodoListInterface), args.Error(1)
-}
-
-func (mock MockTodoListServiceInterface) GetTask(taskID string) (domain.TaskInterface, error) {
-	args := mock.Called(taskID)
-	return args.Get(0).(domain.TaskInterface), args.Error(1)
+func (mock *MockTaskService) GetTasks(ids ...string) ([]domain.Task, error) {
+	args := mock.Called(ids)
+	return args.Get(0).([]domain.Task), args.Error(1)
 }

@@ -10,32 +10,31 @@ type MockDbHandle struct {
 	mock.Mock
 }
 
-func (mock MockDbHandle) GetDB() (*sqlx.DB, error) {
+func (mock *MockDbHandle) GetDB() (*sqlx.DB, error) {
 	args := mock.Called()
 	return args.Get(0).(*sqlx.DB), args.Error(1)
 }
 
-type MockTodoListStore struct {
+type MockTaskStore struct {
 	mock.Mock
 }
 
-func (mock MockTodoListStore) Add(task domain.TaskInterface) error {
+func (mock *MockTaskStore) Add(task domain.Task) error {
 	args := mock.Called(task)
 	return args.Error(0)
 }
-func (mock MockTodoListStore) Remove(taskID string) error {
-	args := mock.Called(taskID)
+
+func (mock *MockTaskStore) Remove(id string, ids ...string) error {
+	args := mock.Called(id, ids)
 	return args.Error(0)
 }
-func (mock MockTodoListStore) Update(task domain.TaskInterface) error {
+
+func (mock *MockTaskStore) Update(task domain.Task) error {
 	args := mock.Called(task)
 	return args.Error(0)
 }
-func (mock MockTodoListStore) GetTodoList() (domain.TodoListInterface, error) {
-	args := mock.Called()
-	return args.Get(0).(domain.TodoListInterface), args.Error(1)
-}
-func (mock MockTodoListStore) GetTask(taskID string) (domain.TaskInterface, error) {
-	args := mock.Called(taskID)
-	return args.Get(0).(domain.TaskInterface), args.Error(1)
+
+func (mock *MockTaskStore) GetTasks(ids ...string) ([]domain.Task, error) {
+	args := mock.Called(ids)
+	return args.Get(0).([]domain.Task), args.Error(1)
 }

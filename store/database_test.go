@@ -8,7 +8,7 @@ import (
 	"todolist/config"
 )
 
-func TestNewDBHandle(t *testing.T) {
+func TestNewDBHandler(t *testing.T) {
 	err := config.Load()
 	require.NoError(t, err)
 
@@ -21,7 +21,7 @@ func TestNewDBHandle(t *testing.T) {
 		{
 			name: "test create new db handle",
 			actualDB: func() (*sqlx.DB, error) {
-				dbHandle := NewDBHandle(config.GetDatabaseConfig())
+				dbHandle := NewDBHandler(config.GetDatabaseConfig())
 				return dbHandle.GetDB()
 			},
 			expectedError: nil,

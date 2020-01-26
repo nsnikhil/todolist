@@ -24,7 +24,7 @@ func newDatabaseConfig() DatabaseConfig {
 	}
 }
 
-func (dc DatabaseConfig) String() string {
+func (dc DatabaseConfig) Source() string {
 	return fmt.Sprintf("dbname=%s user=%s password=%s host=%s port=%d sslmode=disable", dc.name, dc.username, dc.password, dc.host, dc.port)
 }
 

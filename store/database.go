@@ -4,38 +4,38 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"todolist/apperror"
-	"todolist/applogger"
+	"github.com/pkg/errors"
 	"todolist/config"
-	"todolist/constants"
+	"todolist/util"
 )
 
-type DBHandleInterface interface {
+const databaseDriverName  = "postgres"
+
+type DBHandler interface {
 	GetDB() (*sqlx.DB, error)
 }
 
-type DBHandle struct {
+type DefaultDBHandler struct {
 	config.DatabaseConfig
 }
 
-func NewDBHandle(config config.DatabaseConfig) DBHandle {
-	applogger.Infof(constants.DBHandleNew, fmt.Sprint("[DBHandle] [NewDBHandle]"), config.String())
-	return DBHandle{DatabaseConfig: config}
+func NewDBHandler(config config.DatabaseConfig) DBHandler {
+	util.DebugLog("[DefaultDBHandler] [NewDBHandler]", config)
+	return DefaultDBHandler{DatabaseConfig: config}
 }
 
-func (dbh DBHandle) GetDB() (*sqlx.DB, error) {
-	db, err := sqlx.Open(constants.DatabaseDriverName, dbh.String())
+func (dbh DefaultDBHandler) GetDB() (*sqlx.DB, error) {
+	db, err := sqlx.Open(databaseDriverName, dbh.Source())
+
 	if err != nil {
-		applogger.Errorf(constants.ErrorDatabaseFailedToLoad, fmt.Sprint("[DBHandle] [GetDB]"), dbh.String(), err)
-		return nil, apperror.NewDatabaseLoadError(constants.ErrorDatabaseFailedToLoad, fmt.Sprint("[DBHandle] [GetDB]"), dbh.String(), err.Error())
+		return nil, util.LogAndGetError("[DefaultDBHandler] [GetDB]", errors.Wrap(err, fmt.Sprintf("failed to server db for %s", dbh.Source())))
 	}
 
 	if err = db.Ping(); err != nil {
-		applogger.Errorf(constants.ErrorDatabasePingFailed, fmt.Sprint("[DBHandle] [GetDB]"), err)
-		return nil, apperror.NewDatabasePingError(constants.ErrorDatabasePingFailed, fmt.Sprint("[DBHandle] [GetDB]"), err.Error())
+		return nil, util.LogAndGetError("[DefaultDBHandler] [Ping]", err)
 	}
 
 	db.SetMaxOpenConns(dbh.GetMaxPoolSize())
-	applogger.Infof(constants.SuccessfulConnectionToDatabase, fmt.Sprint("[DBHandle] [GetDB]"), dbh.String(), dbh.GetMaxPoolSize())
+	util.DebugLog("[DefaultDBHandler] [GetDB] [Success]")
 	return db, nil
 }

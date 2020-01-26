@@ -2,22 +2,21 @@ package cmd
 
 import (
 	"github.com/golang-migrate/migrate/v4"
-	"todolist/applogger"
-	"todolist/constants"
 	"todolist/store"
+	"todolist/util"
 )
 
-var rollbackCmd = newCommand(constants.RollbackCommandName, constants.RollbackCommandDescription, rollBackMigrations)
+var rollbackCmd = newCommand(rollbackCommandName, rollbackCommandDescription, rollBackMigrations)
 
 func rollBackMigrations() {
 	if err := store.Rollback(); err != nil {
 		if err == migrate.ErrNoChange {
-			applogger.Infof(constants.SchemaUpToDate, "[rollBackMigrations] [Rollback]")
+			util.DebugLog("[rollBackMigrations] [ErrNoChange]")
 			return
 		}
-		applogger.Errorf(constants.ErrorRollbackFailed, "[rollBackMigrations] [Rollback]", err)
+		util.LogError("[rollBackMigrations] [Rollback]", err)
 	}
-	applogger.Infof(constants.SuccessfulRollback, "[rollBackMigrations] [Rollback]")
+	util.DebugLog("[rollBackMigrations] [Rollback] [Success]")
 }
 
 func init() {
