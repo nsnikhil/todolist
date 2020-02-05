@@ -68,3 +68,27 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER_NAME --password-stdin
         docker push nsnikhil/todolist:v0.13
     
+  deploy:
+    need: build
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Save DigitalOcean kubeconfig
+      uses: digitalocean/action-doctl@master
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      with:
+        args: kubernetes cluster kubeconfig show actions-example > $GITHUB_WORKSPACE/.kubeconfig
+
+    - name: Deploy Volumes
+      run: helm --kubeconfig=$GITHUB_WORKSPACE/.kubeconfi install --name-template todolist-prerequisite deployment/helm/todolist_prerequisite
+
+    - name: Verify Volumes Deployment
+      run: helm status todolist-prerequisite
+
+    - name: Deploy App
+      run: helm --kubeconfig=$GITHUB_WORKSPACE/.kubeconfi install --name-template todolist deployment/helm/todolist
+
+    - name: Verify App Deployment
+      run: helm status todolist
