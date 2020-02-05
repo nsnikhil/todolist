@@ -68,35 +68,7 @@ tolerations: []
 affinity: {}
 
 
-
-
-
-
-
-
-
-
-
-databaseVolumeClaim:
-  name: db-pvc
-  accessModes:
-    - ReadWriteOnce
-  storage: 1Gi
-
-databaseInitVolume:
-  name: db-init-pv
-  claimName: db-init-pvc
-  accessModes:
-    - ReadWriteOnce
-  storage: 100Mi
-  hostPath: "/Users/nokhilsoni/goProjects/todolist/store/migrations/"
-  storageClassName: manual
-  labels:
-    type: local
-
 app:
-  podPreset:
-    name: app-preset
   deployment:
     name: app-deploy
     labels:
@@ -108,33 +80,18 @@ app:
         role: backend
       containers:
         name: app-container
-        image: nsnikhil10/todolist:v0.1
-        livenessProbe:
-          path: /ping
-          port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 3
-        readinessProbe:
-          path: /ping
-          port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 3
-        startupProbe:
-          path: /ping
-          port: 8080
-          failureThreshold: 30
-          periodSeconds: 10
+        image: nsnikhil/todolist:v0.12
+        ports:
+          containerPort: 8080
   service:
     name: app-svc
     protocol: TCP
     port: 8080
     targetPort: 8080
-
+    type: NodePort
 
 
 db:
-  podPreset:
-    name: db-preset
   deployment:
     name: db-deploy
     labels:
@@ -147,6 +104,8 @@ db:
       containers:
         name: db-container
         image: postgres:alpine
+        ports:
+          containerPort: 5432
   service:
     name: db-svc
     protocol: TCP
@@ -157,7 +116,7 @@ ingress:
   name: ingress
   annotations: {
     nginx.ingress.kubernetes.io/rewrite-target: /,
-    nginx.ingress.kubernetes.io/use-regex: true
+    nginx.ingress.kubernetes.io/use-regex: "true"
   }
   path: /
 

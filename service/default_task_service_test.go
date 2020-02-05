@@ -44,11 +44,12 @@ func TestTaskServiceAddTask(t *testing.T) {
 				mockTask := &domain.MockTask{}
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Add", mockTask).Return(nil)
+				mockTodoListStore.On("Add", mockTask).Return("some-id", nil)
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Add(mockTask)
+				_, err := service.Add(mockTask)
+				return err
 			},
 			expectedError: nil,
 		},
@@ -58,11 +59,12 @@ func TestTaskServiceAddTask(t *testing.T) {
 				mockTask := &domain.MockTask{}
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Add", mockTask).Return(errors.New("failed to add item"))
+				mockTodoListStore.On("Add", mockTask).Return("invalid", errors.New("failed to add item"))
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Add(mockTask)
+				_, err := service.Add(mockTask)
+				return err
 			},
 			expectedError: errors.New("failed to add item"),
 		},
@@ -89,11 +91,12 @@ func TestTaskServiceRemoveTask(t *testing.T) {
 				mockTask.On("GetID").Return(id)
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Remove", id, []string(nil)).Return(nil)
+				mockTodoListStore.On("Remove", id, []string(nil)).Return(int64(1), nil)
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Remove(mockTask.GetID())
+				_, err := service.Remove(mockTask.GetID())
+				return err
 			},
 			expectedError: nil,
 		},
@@ -106,11 +109,12 @@ func TestTaskServiceRemoveTask(t *testing.T) {
 				mockTask.On("GetID").Return(id)
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Remove", id, []string(nil)).Return(errors.New("failed to remove task"))
+				mockTodoListStore.On("Remove", id, []string(nil)).Return(int64(0), errors.New("failed to remove task"))
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Remove(mockTask.GetID())
+				_, err := service.Remove(mockTask.GetID())
+				return err
 			},
 			expectedError: errors.New("failed to remove task"),
 		},
@@ -134,11 +138,12 @@ func TestTaskServiceUpdateTask(t *testing.T) {
 				mockTask := &domain.MockTask{}
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Update", mockTask).Return(nil)
+				mockTodoListStore.On("Update", mockTask).Return(int64(1), nil)
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Update(mockTask)
+				_, err := service.Update(mockTask)
+				return err
 			},
 			expectedError: nil,
 		},
@@ -148,11 +153,12 @@ func TestTaskServiceUpdateTask(t *testing.T) {
 				mockTask := &domain.MockTask{}
 
 				mockTodoListStore := &store.MockTaskStore{}
-				mockTodoListStore.On("Update", mockTask).Return(errors.New("failed to update task"))
+				mockTodoListStore.On("Update", mockTask).Return(int64(0), errors.New("failed to update task"))
 
 				service := NewTaskService(mockTodoListStore)
 
-				return service.Update(mockTask)
+				_, err := service.Update(mockTask)
+				return err
 			},
 			expectedError: errors.New("failed to update task"),
 		},

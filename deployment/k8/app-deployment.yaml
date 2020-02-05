@@ -17,22 +17,14 @@ spec:
     spec:
       containers:
         - name: todolist-app-container
-          image: nsnikhil10/todolist:v0.1
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 3
+          image: nsnikhil/todolist:v0.12
+          ports:
+            - containerPort: 8080
           readinessProbe:
-            httpGet:
-              path: /ping
-              port: 8080
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
             initialDelaySeconds: 10
-            periodSeconds: 3
-          startupProbe:
-            httpGet:
-              path: /ping
-              port: 8080
-            failureThreshold: 30
-            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            initialDelaySeconds: 20

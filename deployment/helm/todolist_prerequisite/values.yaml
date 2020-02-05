@@ -1,0 +1,26 @@
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+name: "todolist"
+
+databaseVolumeClaim:
+  name: db-pvc
+  accessModes:
+    - ReadWriteOnce
+  storage: 1Gi
+
+databaseInitVolume:
+  name: db-init-pv
+  claimName: db-init-pvc
+  accessModes:
+    - ReadWriteOnce
+  storage: 100Mi
+  hostPath: "/Users/nokhilsoni/goProjects/todolist/store/migrations/"
+  storageClassName: manual
+  labels:
+    type: local
+

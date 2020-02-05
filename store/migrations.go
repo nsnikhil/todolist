@@ -14,9 +14,9 @@ import (
 )
 
 const (
-	migrationPath   = "./store/migrations"
-	rollBackStep = -1
-	cutSet = "file://"
+	migrationPath = "./store/migrations"
+	rollBackStep  = -1
+	cutSet        = "file://"
 )
 
 func Migrate() error {

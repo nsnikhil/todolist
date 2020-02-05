@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -27,7 +28,7 @@ func TestRemoveAPI(t *testing.T) {
 				id := "uuid"
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Remove", id, []string(nil)).Return(nil)
+				mockTaskService.On("Remove", id, []string(nil)).Return(int64(1), nil)
 
 				appService := service.NewService(mockTaskService)
 
@@ -43,7 +44,11 @@ func TestRemoveAPI(t *testing.T) {
 				return server.Remove(ctx, request)
 
 			},
-			expectedResponse: &proto.ApiResponse{},
+			expectedResponse: &proto.ApiResponse{
+				Data: &any.Any{
+					Value: toByteSlice(int64(1)),
+				},
+			},
 		},
 		{
 			name: "test remove multiple task",
@@ -51,7 +56,7 @@ func TestRemoveAPI(t *testing.T) {
 				id := "uuid"
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Remove", id, []string{"other-uuid"}).Return(nil)
+				mockTaskService.On("Remove", id, []string{"other-uuid"}).Return(int64(2), nil)
 
 				appService := service.NewService(mockTaskService)
 
@@ -67,7 +72,11 @@ func TestRemoveAPI(t *testing.T) {
 				return server.Remove(ctx, request)
 
 			},
-			expectedResponse: &proto.ApiResponse{},
+			expectedResponse: &proto.ApiResponse{
+				Data: &any.Any{
+					Value: toByteSlice(int64(2)),
+				},
+			},
 		},
 		{
 			name: "test remove task failed",
@@ -75,7 +84,7 @@ func TestRemoveAPI(t *testing.T) {
 				id := "uuid"
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Remove", id, []string(nil)).Return(errors.New("some error"))
+				mockTaskService.On("Remove", id, []string(nil)).Return(int64(0), errors.New("some error"))
 
 				appService := service.NewService(mockTaskService)
 

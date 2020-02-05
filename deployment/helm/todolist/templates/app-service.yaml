@@ -9,3 +9,4 @@ spec:
     - protocol: {{ .Values.app.service.protocol }}
       port: {{ .Values.app.service.port }}
       targetPort: {{ .Values.app.service.targetPort }}
+  type: {{ .Values.app.service.type }}

@@ -7,7 +7,7 @@ func LogAndGetError(meta string, err error) error {
 	return err
 }
 
-func LogError(meta string, err error)  {
+func LogError(meta string, err error) {
 	applogger.Errorf("%s : %v", meta, err)
 }
 

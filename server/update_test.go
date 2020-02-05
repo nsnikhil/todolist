@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -32,7 +33,7 @@ func TestUpdateAPI(t *testing.T) {
 				mockTask.On("GetStatus").Return(false)
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Update", mockTask).Return(nil)
+				mockTaskService.On("Update", mockTask).Return(int64(1), nil)
 
 				mockFactory := &domain.MockTaskFactory{}
 				mockFactory.On("CreateWithID", id, "title", "", false, []string(nil)).Return(mockTask, nil)
@@ -54,7 +55,11 @@ func TestUpdateAPI(t *testing.T) {
 
 				return server.Update(ctx, request)
 			},
-			expectedResponse: &proto.ApiResponse{},
+			expectedResponse: &proto.ApiResponse{
+				Data: &any.Any{
+					Value: toByteSlice(int64(1)),
+				},
+			},
 		},
 		{
 			name: "test update task failed because of invalid uuid",
@@ -82,7 +87,7 @@ func TestUpdateAPI(t *testing.T) {
 
 				return server.Update(ctx, request)
 			},
-			expectedError:errors.New("some error"),
+			expectedError: errors.New("some error"),
 		},
 		{
 			name: "test update task failed because of empty title",
@@ -110,7 +115,7 @@ func TestUpdateAPI(t *testing.T) {
 
 				return server.Update(ctx, request)
 			},
-			expectedError:errors.New("some error"),
+			expectedError: errors.New("some error"),
 		},
 		{
 			name: "test task service failed to update task",
@@ -124,7 +129,7 @@ func TestUpdateAPI(t *testing.T) {
 				mockFactory.On("CreateWithID", id, "title", "", false, []string(nil)).Return(mockTask, nil)
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Update", mockTask).Return(errors.New("some error"))
+				mockTaskService.On("Update", mockTask).Return(int64(0), errors.New("some error"))
 
 				dependency := app.Dependencies{
 					Service:     service.NewService(mockTaskService),
@@ -141,7 +146,7 @@ func TestUpdateAPI(t *testing.T) {
 
 				return server.Update(ctx, request)
 			},
-			expectedError:errors.New("some error"),
+			expectedError: errors.New("some error"),
 		},
 	}
 

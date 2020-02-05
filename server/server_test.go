@@ -11,3 +11,9 @@ func TestNewServer(t *testing.T) {
 	expectedServer := Server{app.Dependencies{}}
 	assert.Equal(t, expectedServer, actualServer)
 }
+
+func TestNewHealthServer(t *testing.T) {
+	actualServer := NewHealthServer(Server{})
+	expectedServer := &HealthServer{Server{}}
+	assert.Equal(t, expectedServer, actualServer)
+}

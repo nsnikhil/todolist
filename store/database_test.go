@@ -34,3 +34,15 @@ func TestNewDBHandler(t *testing.T) {
 		})
 	}
 }
+
+func TestPingDB(t *testing.T) {
+	err := config.Load()
+	require.NoError(t, err)
+
+	dbHandle := NewDBHandler(config.GetDatabaseConfig())
+	db, err := dbHandle.GetDB()
+	require.NoError(t, err)
+
+	err = db.Ping()
+	require.NoError(t, err)
+}

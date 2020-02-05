@@ -60,7 +60,7 @@ func TestAddTaskInDB(t *testing.T) {
 				task, err := domain.NewTaskFactory().Create("buy groceries", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(task)
+				_, err = taskStore.Add(task)
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -98,10 +98,10 @@ func TestAddTaskInDB(t *testing.T) {
 				readXyz, err := domain.NewTaskFactory().Create("read xyz", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(buyGroceries)
+				_, err = taskStore.Add(buyGroceries)
 				require.NoError(t, err)
 
-				err = taskStore.Add(readXyz)
+				_, err = taskStore.Add(readXyz)
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -166,10 +166,10 @@ func TestRemoveTaskFromDB(t *testing.T) {
 				task, err := domain.NewTaskFactory().Create("buy groceries", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(task)
+				_, err = taskStore.Add(task)
 				require.NoError(t, err)
 
-				err = taskStore.Remove(task.GetID())
+				_, err = taskStore.Remove(task.GetID())
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -204,16 +204,16 @@ func TestRemoveTaskFromDB(t *testing.T) {
 				readXyz, err := domain.NewTaskFactory().Create("read xyz", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(buyGroceries)
+				_, err = taskStore.Add(buyGroceries)
 				require.NoError(t, err)
 
-				err = taskStore.Add(readXyz)
+				_, err = taskStore.Add(readXyz)
 				require.NoError(t, err)
 
-				err = taskStore.Remove(buyGroceries.GetID())
+				_, err = taskStore.Remove(buyGroceries.GetID())
 				require.NoError(t, err)
 
-				err = taskStore.Remove(readXyz.GetID())
+				_, err = taskStore.Remove(readXyz.GetID())
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -251,19 +251,19 @@ func TestRemoveTaskFromDB(t *testing.T) {
 				callPerson, err := domain.NewTaskFactory().Create("call person", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(buyGroceries)
+				_, err = taskStore.Add(buyGroceries)
 				require.NoError(t, err)
 
-				err = taskStore.Add(readXyz)
+				_, err = taskStore.Add(readXyz)
 				require.NoError(t, err)
 
-				err = taskStore.Add(callPerson)
+				_, err = taskStore.Add(callPerson)
 				require.NoError(t, err)
 
-				err = taskStore.Remove(buyGroceries.GetID())
+				_, err = taskStore.Remove(buyGroceries.GetID())
 				require.NoError(t, err)
 
-				err = taskStore.Remove(readXyz.GetID())
+				_, err = taskStore.Remove(readXyz.GetID())
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -325,12 +325,12 @@ func TestUpdateTaskInDB(t *testing.T) {
 				task, err := domain.NewTaskFactory().Create("buy bread", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(task)
+				_, err = taskStore.Add(task)
 				require.NoError(t, err)
 
 				task.UpdateTitle("buy groceries")
 
-				err = taskStore.Update(task)
+				_, err = taskStore.Update(task)
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -368,19 +368,19 @@ func TestUpdateTaskInDB(t *testing.T) {
 				callOther, err := domain.NewTaskFactory().Create("call other", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(task)
+				_, err = taskStore.Add(task)
 				require.NoError(t, err)
 
-				err = taskStore.Add(callOther)
+				_, err = taskStore.Add(callOther)
 				require.NoError(t, err)
 
 				task.UpdateTitle("buy groceries")
 				callOther.UpdateTitle("call xyz")
 
-				err = taskStore.Update(task)
+				_, err = taskStore.Update(task)
 				require.NoError(t, err)
 
-				err = taskStore.Update(callOther)
+				_, err = taskStore.Update(callOther)
 				require.NoError(t, err)
 
 				var defaultTasks []*domain.DefaultTask
@@ -426,6 +426,9 @@ func TestGetTasks(t *testing.T) {
 	require.NoError(t, err)
 	id := uuid.New().String()
 
+	idOne := uuid.New().String()
+	idTwo := uuid.New().String()
+
 	testCases := []struct {
 		name          string
 		actualTask    func() ([]domain.Task, error)
@@ -433,7 +436,7 @@ func TestGetTasks(t *testing.T) {
 		expectedError error
 	}{
 		{
-			name: "server buy groceries task",
+			name: "server get buy groceries task",
 			actualTask: func() ([]domain.Task, error) {
 				dbHandle := NewDBHandler(config.GetDatabaseConfig())
 				db, err := dbHandle.GetDB()
@@ -444,7 +447,7 @@ func TestGetTasks(t *testing.T) {
 				buyGroceries, err := domain.NewTaskFactory().Create("buy groceries", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(buyGroceries)
+				_, err = taskStore.Add(buyGroceries)
 				require.NoError(t, err)
 
 				list, err := taskStore.GetTasks(buyGroceries.GetID())
@@ -460,7 +463,7 @@ func TestGetTasks(t *testing.T) {
 			},
 		},
 		{
-			name: "server all tasks",
+			name: "server get all tasks",
 			actualTask: func() ([]domain.Task, error) {
 				dbHandle := NewDBHandler(config.GetDatabaseConfig())
 				db, err := dbHandle.GetDB()
@@ -474,10 +477,10 @@ func TestGetTasks(t *testing.T) {
 				readXyz, err := domain.NewTaskFactory().Create("readXyz", "", false)
 				require.NoError(t, err)
 
-				err = taskStore.Add(buyGroceries)
+				_, err = taskStore.Add(buyGroceries)
 				require.NoError(t, err)
 
-				err = taskStore.Add(readXyz)
+				_, err = taskStore.Add(readXyz)
 				require.NoError(t, err)
 
 				list, err := taskStore.GetTasks()
@@ -490,6 +493,42 @@ func TestGetTasks(t *testing.T) {
 				require.NoError(t, err)
 
 				readXyz, err := domain.NewTaskFactory().Create("readXyz", "", false)
+				require.NoError(t, err)
+
+				return []domain.Task{buyGroceries, readXyz}
+			},
+		},
+		{
+			name: "server get tasks with ids",
+			actualTask: func() ([]domain.Task, error) {
+				dbHandle := NewDBHandler(config.GetDatabaseConfig())
+				db, err := dbHandle.GetDB()
+				require.NoError(t, err)
+				taskStore := NewTaskStore(db)
+				cleanDB(db, t)
+
+				buyGroceries, err := domain.NewTaskFactory().CreateWithID(idOne, "buy groceries", "", false)
+				require.NoError(t, err)
+
+				readXyz, err := domain.NewTaskFactory().CreateWithID(idTwo, "readXyz", "", false)
+				require.NoError(t, err)
+
+				_, err = taskStore.Add(buyGroceries)
+				require.NoError(t, err)
+
+				_, err = taskStore.Add(readXyz)
+				require.NoError(t, err)
+
+				list, err := taskStore.GetTasks(idOne, idTwo)
+
+				cleanDB(db, t)
+				return list, err
+			},
+			expectedTask: func() []domain.Task {
+				buyGroceries, err := domain.NewTaskFactory().CreateWithID(idOne, "buy groceries", "", false)
+				require.NoError(t, err)
+
+				readXyz, err := domain.NewTaskFactory().CreateWithID(idTwo, "readXyz", "", false)
 				require.NoError(t, err)
 
 				return []domain.Task{buyGroceries, readXyz}

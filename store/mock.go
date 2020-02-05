@@ -19,19 +19,19 @@ type MockTaskStore struct {
 	mock.Mock
 }
 
-func (mock *MockTaskStore) Add(task domain.Task) error {
+func (mock *MockTaskStore) Add(task domain.Task) (string, error) {
 	args := mock.Called(task)
-	return args.Error(0)
+	return args.String(0), args.Error(1)
 }
 
-func (mock *MockTaskStore) Remove(id string, ids ...string) error {
+func (mock *MockTaskStore) Remove(id string, ids ...string) (int64, error) {
 	args := mock.Called(id, ids)
-	return args.Error(0)
+	return args.Get(0).(int64), args.Error(1)
 }
 
-func (mock *MockTaskStore) Update(task domain.Task) error {
+func (mock *MockTaskStore) Update(task domain.Task) (int64, error) {
 	args := mock.Called(task)
-	return args.Error(0)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (mock *MockTaskStore) GetTasks(ids ...string) ([]domain.Task, error) {

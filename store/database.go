@@ -9,7 +9,7 @@ import (
 	"todolist/util"
 )
 
-const databaseDriverName  = "postgres"
+const databaseDriverName = "postgres"
 
 type DBHandler interface {
 	GetDB() (*sqlx.DB, error)

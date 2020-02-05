@@ -10,6 +10,10 @@ import (
 )
 
 const (
+	zero = 0
+
+	invalidID = "invalid"
+
 	insertTask = `INSERT INTO todolist (id, title, description, status, tags) values ($1, $2, $3, $4, $5);`
 
 	deleteTask = `DELETE FROM todolist where id in ($1)`
@@ -18,7 +22,7 @@ const (
 
 	findTask = `SELECT id, title, description, status, tags FROM todolist where id = $1`
 
-	getTasks = `Select id, title, description, status, tags FROM todolist where id in ($1)`
+	getTasks = `Select id, title, description, status, tags FROM todolist where id = ANY($1)`
 
 	getAllTasks = `Select id, title, description, status, tags FROM todolist`
 )
@@ -32,59 +36,59 @@ func NewTaskStore(db *sqlx.DB) TaskStore {
 	return DefaultTaskStore{db: db}
 }
 
-func (tls DefaultTaskStore) Add(task domain.Task) error {
+func (tls DefaultTaskStore) Add(task domain.Task) (string, error) {
 	result, err := tls.db.Exec(insertTask, task.GetID(), task.GetTitle(), task.GetDescription(), task.GetStatus(), pq.Array(task.GetTags()))
 	if err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Add] [Exec]", err)
+		return invalidID, util.LogAndGetError("[DefaultTaskStore] [Add] [Exec]", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if rowsAffected == 0 || err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Add] [RowsAffected]", err)
+		return invalidID, util.LogAndGetError("[DefaultTaskStore] [Add] [RowsAffected]", err)
 	}
 
 	util.DebugLog("[DefaultTaskStore] [Add]", task)
-	return nil
+	return task.GetID(), nil
 }
 
-func (tls DefaultTaskStore) Remove(id string, ids ...string) error {
+func (tls DefaultTaskStore) Remove(id string, ids ...string) (int64, error) {
 	result, err := tls.db.Exec(deleteTask, toArray(append(ids, id)...))
 	if err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Remove] [Exec]", err)
+		return zero, util.LogAndGetError("[DefaultTaskStore] [Remove] [Exec]", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if rowsAffected == 0 || err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Remove] [RowsAffected]", err)
+	if rowsAffected == zero || err != nil {
+		return zero, util.LogAndGetError("[DefaultTaskStore] [Remove] [RowsAffected]", err)
 	}
 
 	util.DebugLog("[DefaultTaskStore] [Remove]", ids)
-	return nil
+	return rowsAffected, nil
 }
 
 func toArray(data ...string) string {
 	return "{" + strings.Join(data, ",") + "}"
 }
 
-func (tls DefaultTaskStore) Update(task domain.Task) error {
+func (tls DefaultTaskStore) Update(task domain.Task) (int64, error) {
 	var oldTask domain.DefaultTask
 
 	if err := tls.db.Get(&oldTask, findTask, task.GetID()); err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Update] [Get]", err)
+		return zero, util.LogAndGetError("[DefaultTaskStore] [Update] [Get]", err)
 	}
 
 	result, err := tls.db.Exec(updateTask, task.GetTitle(), task.GetDescription(), task.GetStatus(), pq.Array(task.GetTags()), task.GetID())
 	if err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Update] [Exec]", err)
+		return zero, util.LogAndGetError("[DefaultTaskStore] [Update] [Exec]", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
-	if rowsAffected == 0 || err != nil {
-		return util.LogAndGetError("[DefaultTaskStore] [Update] [RowsAffected]", err)
+	if rowsAffected == zero || err != nil {
+		return zero, util.LogAndGetError("[DefaultTaskStore] [Update] [RowsAffected]", err)
 	}
 
 	util.DebugLog("[DefaultTaskStore] [Remove]", task)
-	return nil
+	return rowsAffected, nil
 }
 
 func (tls DefaultTaskStore) GetTasks(ids ...string) ([]domain.Task, error) {

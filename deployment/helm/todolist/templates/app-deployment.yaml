@@ -18,21 +18,13 @@ spec:
       containers:
         - name: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.template.containers.name }}
           image: {{ .Values.app.deployment.template.containers.image }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.app.deployment.template.containers.livenessProbe.path }}
-              port: {{ .Values.app.deployment.template.containers.livenessProbe.port }}
-            initialDelaySeconds: {{ .Values.app.deployment.template.containers.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.deployment.template.containers.livenessProbe.periodSeconds }}
+          ports:
+            - containerPort: {{ .Values.app.deployment.template.containers.ports.containerPort }}
           readinessProbe:
-            httpGet:
-              path: {{ .Values.app.deployment.template.containers.readinessProbe.path }}
-              port: {{ .Values.app.deployment.template.containers.readinessProbe.port }}
-            initialDelaySeconds: {{ .Values.app.deployment.template.containers.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.deployment.template.containers.readinessProbe.periodSeconds }}
-          startupProbe:
-            httpGet:
-              path: {{ .Values.app.deployment.template.containers.startupProbe.path }}
-              port: {{ .Values.app.deployment.template.containers.startupProbe.port }}
-            failureThreshold: {{ .Values.app.deployment.template.containers.startupProbe.failureThreshold }}
-            periodSeconds: {{ .Values.app.deployment.template.containers.startupProbe.periodSeconds }}
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            initialDelaySeconds: 10
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:8080"]
+            initialDelaySeconds: 20

@@ -1,4 +1,5 @@
 test: build
+	go clean -testcache
 	go test ./...
 
 setup: deps copy-config migrate build test
@@ -6,7 +7,8 @@ setup: deps copy-config migrate build test
 copy-config:
 	cp application.yaml.sample application.yaml
 
-test-cover-html:
+test-cover-html: build
+	go clean -testcache
 	mkdir -p out/
 	go test ./... -coverprofile=out/coverage.out
 	go tool cover -html=out/coverage.out
@@ -43,6 +45,14 @@ k8-serve:
 k8-stop:
 	chmod +x deployment/k8/stop.sh
 	./deployment/k8/stop.sh
+
+helm-serve:
+	chmod +x deployment/helm/start.sh
+	./deployment/helm/start.sh
+
+helm-stop:
+	chmod +x deployment/helm/stop.sh
+	./deployment/helm/stop.sh
 
 migrate:
 	./out/main migrate

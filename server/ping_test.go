@@ -13,7 +13,7 @@ import (
 
 func TestPing(t *testing.T) {
 	dependency := app.Dependencies{
-		Service: service.NewService(&service.MockTaskService{}),
+		Service:     service.NewService(&service.MockTaskService{}),
 		TaskFactory: &domain.MockTaskFactory{},
 	}
 	server := NewServer(dependency)

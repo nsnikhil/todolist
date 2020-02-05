@@ -13,8 +13,10 @@ spec:
     metadata:
       labels:
         app: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.labels.app }}
-        role: database
+        role: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.labels.role }}
     spec:
       containers:
         - name: {{ include "todolist.fullname" . }}-{{ .Values.db.deployment.template.containers.name }}
           image: {{ .Values.db.deployment.template.containers.image }}
+          ports:
+            - containerPort: {{ .Values.db.deployment.template.containers.ports.containerPort }}

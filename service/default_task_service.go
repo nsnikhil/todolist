@@ -15,28 +15,31 @@ func NewTaskService(taskStore store.TaskStore) TaskService {
 	return DefaultTaskService{taskStore: taskStore}
 }
 
-func (tls DefaultTaskService) Add(task domain.Task) error {
-	if err := tls.taskStore.Add(task); err != nil {
-		return util.LogAndGetError("[DefaultTaskService] [Add]", err)
+func (tls DefaultTaskService) Add(task domain.Task) (string, error) {
+	id, err := tls.taskStore.Add(task)
+	if err != nil {
+		return id, util.LogAndGetError("[DefaultTaskService] [Add]", err)
 	}
 	util.DebugLog("[DefaultTaskService] [Add]", task)
-	return nil
+	return id, err
 }
 
-func (tls DefaultTaskService) Remove(id string, ids ...string) error {
-	if err := tls.taskStore.Remove(id, ids...); err != nil {
-		return util.LogAndGetError("[DefaultTaskService] [Remove]", err)
+func (tls DefaultTaskService) Remove(id string, ids ...string) (int64, error) {
+	count, err := tls.taskStore.Remove(id, ids...)
+	if err != nil {
+		return count, util.LogAndGetError("[DefaultTaskService] [Remove]", err)
 	}
 	util.DebugLog("[DefaultTaskService] [Remove]", ids)
-	return nil
+	return count, err
 }
 
-func (tls DefaultTaskService) Update(task domain.Task) error {
-	if err := tls.taskStore.Update(task); err != nil {
-		return util.LogAndGetError("[DefaultTaskService] [Update]", err)
+func (tls DefaultTaskService) Update(task domain.Task) (int64, error) {
+	count, err := tls.taskStore.Update(task)
+	if err != nil {
+		return count, util.LogAndGetError("[DefaultTaskService] [Update]", err)
 	}
 	util.DebugLog("[DefaultTaskService] [Update]", task)
-	return nil
+	return count, nil
 }
 
 func (tls DefaultTaskService) GetTasks(ids ...string) ([]domain.Task, error) {

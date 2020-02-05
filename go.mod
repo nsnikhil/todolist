@@ -7,7 +7,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.7.0
 	github.com/golang/protobuf v1.3.1
 	github.com/google/uuid v1.1.1
-	github.com/gorilla/mux v1.7.3
+	github.com/gorilla/mux v1.7.3 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.0.0
 	github.com/magiconair/properties v1.8.1
@@ -23,5 +23,4 @@ require (
 	golang.org/x/sys v0.0.0-20191029155521-f43be2a4598c // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/grpc v1.21.0
-	gotest.tools v2.2.0+incompatible
 )

@@ -1,11 +1,11 @@
 apiVersion: settings.k8s.io/v1alpha1
 kind: PodPreset
 metadata:
-  name: {{ include "todolist.fullname" . }}-{{ .Values.app.podPreset.name }}
+  name: todolist-app-preset
 spec:
   selector:
     matchLabels:
-      app: {{ include "todolist.fullname" . }}-{{ .Values.app.deployment.template.labels.app }}
+      app: todolist-app
   env:
     - name: DB_HOST
       value: todolist-db-svc

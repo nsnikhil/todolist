@@ -3,13 +3,13 @@ package config
 import "fmt"
 
 type DatabaseConfig struct {
-	host          string
-	port          int
-	username      string
-	password      string
-	name          string
-	maxPoolSize   int
-	retryCount    int
+	host        string
+	port        int
+	username    string
+	password    string
+	name        string
+	maxPoolSize int
+	retryCount  int
 }
 
 func newDatabaseConfig() DatabaseConfig {

@@ -30,6 +30,13 @@ $ make docker-serve
 ```
 $ make k8-serve
 ```
+to use helm for deployment 
+
+```
+$ make helm-serve
+```
+##### The application runs on $(minikube ip):nodeport when started using kubernetes
+
 
 ## DB Migration
 
@@ -43,7 +50,7 @@ $ make migrate
 $ make rollback
 ```
 
-## Disclaimer
-- Helm chart is still in development.
-- The `constant` and `apperror` package needs cleanup.
+## Know Issues
 - The config command only outputs the address the app will run on.
+- Id returned by add method from store is not being used in test
+- Count returned by remove and update is not being used in test

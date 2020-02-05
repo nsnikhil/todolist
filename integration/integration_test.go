@@ -74,7 +74,7 @@ func TestAllAPIs(t *testing.T) {
 
 	client := proto.NewApiClient(c)
 
-	ctx, _ := context.WithTimeout(context.Background(), time.Duration(100)*time.Millisecond)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 
 	testPing(ctx, client, t)
 	testAdd(ctx, client, t)

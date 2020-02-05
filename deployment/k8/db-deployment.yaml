@@ -18,3 +18,5 @@ spec:
       containers:
         - name: todolist-db-container
           image: postgres:alpine
+          ports:
+            - containerPort: 5432

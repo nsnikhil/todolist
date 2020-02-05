@@ -23,7 +23,12 @@ jobs:
     - name: Get dependencies
       run: make deps
 
-    - name: Migrations
+    - name: Test
+      env:
+        POSTGRES_HOST: 127.0.0.1
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ""
       run: |
         sudo apt-get install -y wget ca-certificates
         wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -33,9 +38,6 @@ jobs:
         make copy-config
         make build
         make migrate
-
-    - name: Test
-      run: |
         make test
 
   build:
@@ -52,11 +54,8 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Get dependencies
-      run: make deps
-
     - name: Build Docker file
-      run: docker build -t nsnikhil10/todolist:v0.1 -f deployment/docker/Dockerfile .
+      run: docker build -t nsnikhil10/todolist:v0.12 -f deployment/docker/Dockerfile .
 
     - name: Push to Docker hub
       env:
@@ -64,5 +63,5 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER_NAME --password-stdin
-        docker push nsnikhil10/todolist:v0.1
+        docker push nsnikhil/todolist:v0.12
     

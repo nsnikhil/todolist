@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/golang/protobuf/ptypes/any"
 	"todolist/proto"
 	"todolist/util"
 )
@@ -12,9 +13,11 @@ func (s Server) Update(ctx context.Context, in *proto.UpdateRequest) (*proto.Api
 		return &proto.ApiResponse{}, util.LogAndGetError("[Server] [Update] [CreateWithID]", err)
 	}
 
-	if err := s.Service.Update(task); err != nil {
+	count, err := s.Service.Update(task)
+	if err != nil {
 		return &proto.ApiResponse{}, util.LogAndGetError("[Server] [Update]", err)
 	}
 
-	return &proto.ApiResponse{}, nil
+	util.DebugLog("[Server] [Update] [Success]")
+	return &proto.ApiResponse{Data: &any.Any{Value: toByteSlice(count)}}, nil
 }

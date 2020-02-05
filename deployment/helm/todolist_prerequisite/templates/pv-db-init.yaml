@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: {{ include "todolist.fullname" . }}-{{ .Values.databaseInitVolume.name }}
+  name: {{ .Values.name }}-{{ .Values.databaseInitVolume.name }}
   labels:
     type: {{ .Values.databaseInitVolume.labels.type }}
 spec:

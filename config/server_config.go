@@ -23,4 +23,3 @@ func (sc ServerConfig) Address() string {
 func (sc ServerConfig) Protocol() string {
 	return sc.protocol
 }
-

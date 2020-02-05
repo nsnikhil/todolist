@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -30,7 +31,7 @@ func TestAddAPI(t *testing.T) {
 				mockTask.On("GetStatus").Return(false)
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Add", mockTask).Return(nil)
+				mockTaskService.On("Add", mockTask).Return("some-id", nil)
 
 				mockFactory := &domain.MockTaskFactory{}
 				mockFactory.On("Create", "title", "", false, []string(nil)).Return(mockTask, nil)
@@ -48,7 +49,12 @@ func TestAddAPI(t *testing.T) {
 
 				return server.Add(ctx, request)
 			},
-			expectedResponse: &proto.ApiResponse{},
+			expectedResponse: &proto.ApiResponse{
+				Data: &any.Any{
+					TypeUrl: "string",
+					Value:   []byte("some-id"),
+				},
+			},
 		},
 		{
 			name: "test new task creation failed",
@@ -82,7 +88,7 @@ func TestAddAPI(t *testing.T) {
 				mockFactory.On("Create", "", "", false, []string(nil)).Return(mockTask, nil)
 
 				mockTaskService := &service.MockTaskService{}
-				mockTaskService.On("Add", mockTask).Return(errors.New("some error"))
+				mockTaskService.On("Add", mockTask).Return("some-id", errors.New("some error"))
 
 				dependency := app.Dependencies{
 					Service:     service.NewService(mockTaskService),

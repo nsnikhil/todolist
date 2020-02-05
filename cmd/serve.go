@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"os"
 	"os/signal"
@@ -16,11 +18,16 @@ import (
 
 var serveCmd = newCommand(serveCommandName, serveCommandDescription, serve)
 
-
 func serve() {
 	s := server.NewServer(app.SetUpDependencies())
+	hs := server.NewHealthServer(s)
+
 	gs := grpc.NewServer()
 	proto.RegisterApiServer(gs, &s)
+
+	grpc_health_v1.RegisterHealthServer(gs, hs)
+
+	reflection.Register(gs)
 
 	go listenAndServe(gs, setUpListener())
 	waitForShutdown(gs)
