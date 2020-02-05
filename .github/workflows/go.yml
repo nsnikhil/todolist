@@ -65,6 +65,5 @@ jobs:
         DOCKER_USER_NAME: ${{ secrets.DOCKER_USER_NAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        docker login -u $DOCKER_USER_NAME -p $DOCKER_PASSWORD docker.io
-        docker push nsnikhil/todolist:v0.13
+        docker login -u $DOCKER_USER_NAME -p $DOCKER_PASSWORD && docker push nsnikhil/todolist:v0.13
     
