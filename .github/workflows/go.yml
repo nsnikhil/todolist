@@ -61,9 +61,11 @@ jobs:
       run: docker build -t nsnikhil/todolist:v0.13 -f deployment/docker/Dockerfile .
 
     - name: Push to Docker hub
+      uses: actions/checkout@v1
       env:
         DOCKER_USER_NAME: ${{ secrets.DOCKER_USER_NAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        docker login -u $DOCKER_USER_NAME -p $DOCKER_PASSWORD && docker push nsnikhil/todolist:v0.13
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER_NAME --password-stdin
+        docker push nsnikhil/todolist:v0.13
     
