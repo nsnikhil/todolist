@@ -63,7 +63,7 @@ jobs:
     - name: Push to Docker hub
       uses: opspresso/action-docker@master
       env:
-        DOCKER_USER_NAME: ${{ secrets.DOCKER_USER_NAME }}
+        DOCKER_USER_NAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         IMAGE_NAME: "nsnikhil/todolist"
         TAG_NAME: "v0.13"
