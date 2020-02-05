@@ -58,7 +58,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Build Docker file
-      run: docker build -t nsnikhil10/todolist:v0.12 -f deployment/docker/Dockerfile .
+      run: docker build -t nsnikhil/todolist:v0.13 -f deployment/docker/Dockerfile .
 
     - name: Push to Docker hub
       env:
@@ -66,5 +66,5 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER_NAME --password-stdin
-        docker push nsnikhil/todolist:v0.12
+        docker push nsnikhil/todolist:v0.13
     
